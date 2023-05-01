@@ -1,2 +1,3 @@
 # ignore all files under the data directory
 gitignore/
+login.txt
