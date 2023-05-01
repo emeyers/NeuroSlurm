@@ -570,3 +570,12 @@ installing to /vast/palmer/home.grace/em939/R/x86_64-pc-linux-gnu-library/4.1/00
 ** demo
 ** inst
 ** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (colorspace)
