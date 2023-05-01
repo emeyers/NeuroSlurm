@@ -896,3 +896,37 @@ ERROR: lazy loading failed for package ‘gtable’
 ** using staged installation
 ** R
 ** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (scales)
+* installing *source* package ‘tidyselect’ ...
+** package ‘tidyselect’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+Error in loadNamespace(i, c(lib.loc, .libPaths()), versionCheck = vI[[i]]) : 
+  namespace ‘rlang’ 1.0.1 is being loaded, but >= 1.0.4 is required
+Calls: <Anonymous> ... withCallingHandlers -> loadNamespace -> namespaceImport -> loadNamespace
+Execution halted
+ERROR: lazy loading failed for package ‘tidyselect’
+* removing ‘/vast/palmer/home.grace/em939/R/x86_64-pc-linux-gnu-library/4.1/tidyselect’
+* restoring previous ‘/vast/palmer/home.grace/em939/R/x86_64-pc-linux-gnu-library/4.1/tidyselect’
+* installing *source* package ‘pillar’ ...
+** package ‘pillar’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+Error in loadNamespace(i, c(lib.loc, .libPaths()), versionCheck = vI[[i]]) : 
+  namespace ‘rlang’ 1.0.1 is already loaded, but >= 1.0.2 is required
+Calls: <Anonymous> ... withCallingHandlers -> loadNamespace -> namespaceImport -> loadNamespace
+Execution halted
+ERROR: lazy loading failed for package ‘pillar’
+* removing ‘/vast/palmer/home.grace/em939/R/x86_64-pc-linux-gnu-library/4.1/pillar’
+* restoring previous ‘/vast/palmer/home.grace/em939/R/x86_64-pc-linux-gnu-library/4.1/pillar’
