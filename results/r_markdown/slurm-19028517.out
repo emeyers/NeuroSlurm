@@ -702,3 +702,39 @@ installing to /vast/palmer/home.grace/em939/R/x86_64-pc-linux-gnu-library/4.1/00
 ** building package indices
 ** installing vignettes
 ** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (proxy)
+* installing *source* package ‘tictoc’ ...
+** package ‘tictoc’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (tictoc)
+* installing *source* package ‘lifecycle’ ...
+** package ‘lifecycle’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+Error in loadNamespace(i, c(lib.loc, .libPaths()), versionCheck = vI[[i]]) : 
+  namespace ‘rlang’ 1.0.1 is being loaded, but >= 1.0.6 is required
+Calls: <Anonymous> ... withCallingHandlers -> loadNamespace -> namespaceImport -> loadNamespace
+Execution halted
+ERROR: lazy loading failed for package ‘lifecycle’
+* removing ‘/vast/palmer/home.grace/em939/R/x86_64-pc-linux-gnu-library/4.1/lifecycle’
+* restoring previous ‘/vast/palmer/home.grace/em939/R/x86_64-pc-linux-gnu-library/4.1/lifecycle’
+* installing *source* package ‘R.oo’ ...
+** package ‘R.oo’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
