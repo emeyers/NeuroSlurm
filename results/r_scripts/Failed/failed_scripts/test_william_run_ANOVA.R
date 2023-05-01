@@ -15,23 +15,22 @@ library(NeuroDecodeR)
 
 
 # Bin the data
-raster_dir_name <- "../../shared_projects/allen_data/R_EphysData/session_715093703/natural_scenes/"
-create_binned_data(raster_dir_name, "Allen_715093703", 10, 10)
+#raster_dir_name <- "/home/em939/shared_projects/allen_data/R_EphysData/session_715093703/natural_scenes/"
+#create_binned_data(raster_dir_name, "Allen_715093703", 10, 10)
 
 # getting an error message when run with interval from -100 to 500  :(
 #create_binned_data(raster_dir_name, "Allen_715093703", 10, 1, -100, 500)
-create_binned_data(raster_dir_name, "Allen_715093703", 10, 1, -50, 250)
+#create_binned_data(raster_dir_name, "Allen_715093703", 10, 1, -50, 250)
 
 
 
-
-source("run_ANOVA.R")
+source("/home/em939/research/Allen_ANOVA_analyses/run_ANOVA.R")
 
 
 # binned_data_name <- "binned_data/Allen_715093703_10bins_10sampled.Rda"
 #binned_data_name <- "binned_data/Allen_715093703_10bins_1sampled_start-100_end500.Rda"
 
-binned_data_name <- "binned_data/Allen_715093703_10bins_1sampled_start-50_end250.Rda"
+binned_data_name <- "/home/em939/research/Allen_ANOVA_analyses/binned_data/Allen_715093703_10bins_1sampled_start-50_end250.Rda"
 
 
 labels <- "natural_scene_stimulus_id"
