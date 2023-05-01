@@ -1,0 +1,27 @@
+bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+
+
+processing file: CopyofNeuroShiny_Script_ID_20230326_161419_61744.Rmd
+  |                                                                              |                                                                      |   0%  |                                                                              |..........                                                            |  14%
+  ordinary text without R code
+
+  |                                                                              |....................                                                  |  29%
+label: setup (with options) 
+List of 1
+ $ include: logi FALSE
+
+  |                                                                              |..............................                                        |  43%
+  ordinary text without R code
+
+  |                                                                              |........................................                              |  57%
+label: unnamed-chunk-1
+Quitting from lines 23-70 (CopyofNeuroShiny_Script_ID_20230326_161419_61744.Rmd) 
+Error in ds_basic(binned_data = binned_data, labels = "combined_ID_position",  : 
+  unused argument (labels = "combined_ID_position")
+Calls: <Anonymous> ... handle -> withCallingHandlers -> withVisible -> eval -> eval
+In addition: Warning message:
+In png(..., res = dpi, units = "in") :
+  unable to open connection to X11 display ''
+
+Execution halted

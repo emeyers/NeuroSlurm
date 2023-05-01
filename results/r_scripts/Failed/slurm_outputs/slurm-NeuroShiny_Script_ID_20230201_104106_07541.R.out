@@ -1,0 +1,5 @@
+bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+Error in ds_basic(binned_data = binned_data, labels = "combined_ID_position",  : 
+  unused argument (labels = "combined_ID_position")
+Execution halted
