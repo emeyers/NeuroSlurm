@@ -1,0 +1,223 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Decoding Analysis},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Decoding Analysis}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\hypertarget{run-the-decoding-analysis}{%
+\section{Run the decoding analysis}\label{run-the-decoding-analysis}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(NeuroDecodeR)}
+
+\CommentTok{\# I have access to William\textquotesingle{}s files so I can load this data...}
+\NormalTok{binned\_data }\OtherTok{\textless{}{-}} \FunctionTok{file.path}\NormalTok{(}\StringTok{\textquotesingle{}/home/wz354/project/NeuralDecoding/NeuralDecoding/data/binned/ZD\_150bins\_50sampled.Rda\textquotesingle{}}\NormalTok{) }
+
+
+\NormalTok{ds }\OtherTok{\textless{}{-}} \FunctionTok{ds\_basic}\NormalTok{(}
+    \AttributeTok{binned\_data =}\NormalTok{ binned\_data,}
+    \AttributeTok{labels =} \StringTok{\textquotesingle{}combined\_ID\_position\textquotesingle{}}\NormalTok{,}
+    \AttributeTok{num\_label\_repeats\_per\_cv\_split =} \DecValTok{1}\NormalTok{,}
+    \AttributeTok{num\_cv\_splits =} \DecValTok{2}\NormalTok{,}
+    \AttributeTok{num\_resample\_sites =} \DecValTok{132}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Automatically selecting sites_IDs_to_use. Since num_cv_splits = 2 and num_label_repeats_per_cv_split = 1, all sites that have 2 repetitions have been selected. This yields 132 sites that will be used for decoding (out of 132 total).
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cl }\OtherTok{\textless{}{-}} \FunctionTok{cl\_max\_correlation}\NormalTok{(}\AttributeTok{return\_decision\_values =} \ConstantTok{TRUE}\NormalTok{) }
+
+
+\NormalTok{fp\_zs }\OtherTok{\textless{}{-}} \FunctionTok{fp\_zscore}\NormalTok{()}
+
+\NormalTok{fps }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(fp\_zs) }
+
+
+\NormalTok{rm\_main }\OtherTok{\textless{}{-}} \FunctionTok{rm\_main\_results}\NormalTok{(}
+     \AttributeTok{include\_norm\_rank\_results =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{rm\_cm }\OtherTok{\textless{}{-}} \FunctionTok{rm\_confusion\_matrix}\NormalTok{(}
+     \AttributeTok{save\_TCD\_results =} \ConstantTok{TRUE}\NormalTok{,}
+     \AttributeTok{create\_decision\_vals\_confusion\_matrix =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{rms }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(rm\_main, rm\_cm)}
+
+
+\NormalTok{cv }\OtherTok{\textless{}{-}} \FunctionTok{cv\_standard}\NormalTok{(}
+     \AttributeTok{datasource =}\NormalTok{ ds,}
+     \AttributeTok{classifier =}\NormalTok{ cl, }
+     \AttributeTok{feature\_preprocessors =}\NormalTok{ fps,}
+     \AttributeTok{result\_metrics =}\NormalTok{ rms) }
+
+
+\NormalTok{DECODING\_RESULTS }\OtherTok{\textless{}{-}} \FunctionTok{run\_decoding}\NormalTok{(cv)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   |                                                                              |                                                                      |   0%  |                                                                              |=                                                                     |   2%  |                                                                              |===                                                                   |   4%  |                                                                              |====                                                                  |   6%  |                                                                              |======                                                                |   8%  |                                                                              |=======                                                               |  10%  |                                                                              |========                                                              |  12%  |                                                                              |==========                                                            |  14%  |                                                                              |===========                                                           |  16%  |                                                                              |=============                                                         |  18%  |                                                                              |==============                                                        |  20%  |                                                                              |===============                                                       |  22%  |                                                                              |=================                                                     |  24%  |                                                                              |==================                                                    |  26%  |                                                                              |====================                                                  |  28%  |                                                                              |=====================                                                 |  30%  |                                                                              |======================                                                |  32%  |                                                                              |========================                                              |  34%  |                                                                              |=========================                                             |  36%  |                                                                              |===========================                                           |  38%  |                                                                              |============================                                          |  40%  |                                                                              |=============================                                         |  42%  |                                                                              |===============================                                       |  44%  |                                                                              |================================                                      |  46%  |                                                                              |==================================                                    |  48%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================                                  |  52%  |                                                                              |======================================                                |  54%  |                                                                              |=======================================                               |  56%  |                                                                              |=========================================                             |  58%  |                                                                              |==========================================                            |  60%  |                                                                              |===========================================                           |  62%  |                                                                              |=============================================                         |  64%  |                                                                              |==============================================                        |  66%  |                                                                              |================================================                      |  68%  |                                                                              |=================================================                     |  70%  |                                                                              |==================================================                    |  72%  |                                                                              |====================================================                  |  74%  |                                                                              |=====================================================                 |  76%  |                                                                              |=======================================================               |  78%  |                                                                              |========================================================              |  80%  |                                                                              |=========================================================             |  82%  |                                                                              |===========================================================           |  84%  |                                                                              |============================================================          |  86%  |                                                                              |==============================================================        |  88%  |                                                                              |===============================================================       |  90%  |                                                                              |================================================================      |  92%  |                                                                              |==================================================================    |  94%  |                                                                              |===================================================================   |  96%  |                                                                              |===================================================================== |  98%  |                                                                              |======================================================================| 100%
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{paste}\NormalTok{(}\StringTok{\textquotesingle{}The analysis ID is:\textquotesingle{}}\NormalTok{,}
+\NormalTok{        DECODING\_RESULTS}\SpecialCharTok{$}\NormalTok{cross\_validation\_paramaters}\SpecialCharTok{$}\NormalTok{analysis\_ID)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "The analysis ID is: 20230501_144311_74913"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{log\_save\_results}\NormalTok{(DECODING\_RESULTS, }
+    \FunctionTok{file.path}\NormalTok{(}\StringTok{\textquotesingle{}/home/em939/research/test\_william\_cluster\_code/results\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}decoding\_results\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}decoding\_result\_files\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## The directory to save the results does not exist so it is being created now.
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in log_save_results(DECODING_RESULTS, file.path("/home/em939/research/test_william_cluster_code/results", : The manifest file does not exist.
+##   Assuming this is the first result that is saved and creating manifest file
+\end{verbatim}
+
+\hypertarget{plot-some-results}{%
+\section{Plot some results}\label{plot-some-results}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(DECODING\_RESULTS}\SpecialCharTok{$}\NormalTok{rm\_main\_results, }\AttributeTok{type =} \StringTok{\textquotesingle{}line\textquotesingle{}}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NeuroShiny_Script_ID_20230326_161419_61744_em_try_01_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(DECODING\_RESULTS}\SpecialCharTok{$}\NormalTok{rm\_main\_results) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NeuroShiny_Script_ID_20230326_161419_61744_em_try_01_files/figure-latex/unnamed-chunk-2-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(DECODING\_RESULTS}\SpecialCharTok{$}\NormalTok{rm\_confusion\_matrix) }
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NeuroShiny_Script_ID_20230326_161419_61744_em_try_01_files/figure-latex/unnamed-chunk-2-3.pdf}
+
+\end{document}
