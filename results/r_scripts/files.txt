@@ -1,1 +1,0 @@
-test_william_run_ANOVA_try_06.R 19038290
