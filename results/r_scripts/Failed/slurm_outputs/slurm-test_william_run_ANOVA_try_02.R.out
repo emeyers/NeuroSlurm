@@ -1,0 +1,54 @@
+bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: ‘plotly’
+
+The following object is masked from ‘package:ggplot2’:
+
+    last_plot
+
+The following object is masked from ‘package:stats’:
+
+    filter
+
+The following object is masked from ‘package:graphics’:
+
+    layout
+
+Error:
+! Internal error in `dict_hash_with()`: Dictionary is full.
+Backtrace:
+     ▆
+  1. └─global run_ANOVA(binned_data_name, labels)
+  2.   ├─dplyr::summarize(...)
+  3.   ├─dplyr::group_by(...)
+  4.   ├─dplyr::mutate(...)
+  5.   ├─dplyr::group_by(...)
+  6.   ├─dplyr::mutate(...)
+  7.   ├─dplyr::mutate(...)
+  8.   ├─dplyr::group_by(...)
+  9.   ├─dplyr::mutate(...)
+ 10.   ├─dplyr::group_by(...)
+ 11.   ├─dplyr::mutate(...)
+ 12.   ├─dplyr::group_by(...)
+ 13.   ├─dplyr::mutate(...)
+ 14.   ├─dplyr::group_by(long_data, siteID)
+ 15.   └─dplyr:::group_by.data.frame(long_data, siteID)
+ 16.     └─dplyr::grouped_df(groups$data, groups$group_names, .drop)
+ 17.       └─dplyr:::compute_groups(data, vars, drop = drop)
+ 18.         └─dplyr:::vec_split_id_order(group_vars)
+ 19.           └─vctrs::vec_group_loc(x)
+ 20.             └─vctrs `<fn>`()
+ 21.               └─rlang::abort(message = message)
+Execution halted

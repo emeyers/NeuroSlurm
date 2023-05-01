@@ -23,6 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(NeuroDecodeR)
 
+# I have access to William's files so I can load this data...
 binned_data <- file.path('/home/wz354/project/NeuralDecoding/NeuralDecoding/data/binned/ZD_150bins_50sampled.Rda') 
 
 
@@ -64,7 +65,7 @@ paste('The analysis ID is:',
 
 
 log_save_results(DECODING_RESULTS, 
-	file.path('/home/wz354/project/NeuralDecoding/NeuralDecoding/results', 'decoding_results', 'decoding_result_files', ''))
+	file.path('/home/em939/research/test_william_cluster_code/results', 'decoding_results', 'decoding_result_files', ''))
 
 
 ```
