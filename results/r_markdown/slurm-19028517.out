@@ -1037,3 +1037,20 @@ ERROR: lazy loading failed for package ‘dplyr’
 ** R
 ** data
 *** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+Error in loadNamespace(i, c(lib.loc, .libPaths()), versionCheck = vI[[i]]) : 
+  namespace ‘rlang’ 1.0.1 is being loaded, but >= 1.1.0 is required
+Calls: <Anonymous> ... withCallingHandlers -> loadNamespace -> namespaceImport -> loadNamespace
+Execution halted
+ERROR: lazy loading failed for package ‘ggplot2’
+* removing ‘/vast/palmer/home.grace/em939/R/x86_64-pc-linux-gnu-library/4.1/ggplot2’
+* restoring previous ‘/vast/palmer/home.grace/em939/R/x86_64-pc-linux-gnu-library/4.1/ggplot2’
+* installing *source* package ‘forcats’ ...
+** package ‘forcats’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
