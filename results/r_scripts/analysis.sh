@@ -5,4 +5,4 @@
 #SBATCH --constraint cascadelake
 #SBATCH --mem=1500G
 module load R/4.1.0-foss-2020b
-Rscript Pending/"test_william_run_ANOVA_try_03.R"
+Rscript Pending/"test_william_run_ANOVA_try_04.R"
