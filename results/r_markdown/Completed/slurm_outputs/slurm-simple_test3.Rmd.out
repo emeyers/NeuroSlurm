@@ -1,0 +1,46 @@
+bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+
+
+processing file: simple_test3.Rmd
+  |                                                                              |                                                                      |   0%  |                                                                              |........                                                              |  11%
+  ordinary text without R code
+
+  |                                                                              |................                                                      |  22%
+label: setup (with options) 
+List of 1
+ $ include: logi FALSE
+
+  |                                                                              |.......................                                               |  33%
+  ordinary text without R code
+
+  |                                                                              |...............................                                       |  44%
+label: unnamed-chunk-1
+  |                                                                              |.......................................                               |  56%
+  ordinary text without R code
+
+  |                                                                              |...............................................                       |  67%
+label: unnamed-chunk-2 (with options) 
+List of 1
+ $ eval: logi FALSE
+
+  |                                                                              |......................................................                |  78%
+  ordinary text without R code
+
+  |                                                                              |..............................................................        |  89%
+label: unnamed-chunk-3 (with options) 
+List of 1
+ $ eval: logi FALSE
+
+  |                                                                              |......................................................................| 100%
+  ordinary text without R code
+
+
+output file: simple_test3.knit.md
+
+/gpfs/loomis/apps/avx/software/Pandoc/2.10/bin/pandoc +RTS -K512m -RTS simple_test3.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output simple_test3.tex --lua-filter /vast/palmer/apps/avx.grace/software/R/4.1.0-foss-2020b/lib64/R/library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /vast/palmer/apps/avx.grace/software/R/4.1.0-foss-2020b/lib64/R/library/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --highlight-style tango --pdf-engine pdflatex --variable graphics --variable 'geometry:margin=1in' 
+
+Output created: simple_test3.pdf
+Warning message:
+In png(..., res = dpi, units = "in") :
+  unable to open connection to X11 display ''
