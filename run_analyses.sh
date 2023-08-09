@@ -149,7 +149,7 @@ done
 
 cd ../..
 
-git add .
+git add -A
 git commit -m "$commitmessage"
 git push https://$token@$link
 
