@@ -1,4 +1,4 @@
 url:https://github.com/emeyers/test_william_cluster_code.git
-token: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
+token: blahblah
 directory:/home/em939/research/test_william_cluster_code
 message:New jobs
