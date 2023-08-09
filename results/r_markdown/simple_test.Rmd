@@ -14,12 +14,25 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
+```{r}
+
+load('/home/em939/shared_projects/allen_brain_observatory_data/allen_binned_data/100bins_5sampled/session_715093703_100bins_5sampled.Rda')
+
+dim(binned_data)
+
+
+
+```
+
+
+
+
 
 
 # Run the decoding analysis 
 
 
-```{r}
+```{r eval=FALSE}
 
 devtools::install_github("emeyers/NeuroDecodeR")
 
@@ -82,7 +95,7 @@ log_save_results(DECODING_RESULTS,
 # Plot some results 
 
 
-```{r}
+```{r eval = FALSE}
 
 plot(DECODING_RESULTS$rm_main_results, type = 'line') 
 
