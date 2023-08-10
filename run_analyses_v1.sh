@@ -19,24 +19,24 @@
 # git pull https://$token@$link
 
 
+echo start
 
 
-cd analyses
+cd analyses/r_scripts
 
-
-# This block of code checks the files in submitted_job_info.txt to see their job progress.
-# If the job is completed or failed, it moves to the corresponding folder and is removed from the list of files in submitted_job_info.txt
-# If the job is still running, it remains in the Pending folder and stays in submitted_job_info.txt
-touch submitted_job_info.txt
+# This block of code checks the files in running_job_info.txt to see their job progress.
+# If the job is completed or failed, it moves to the corresponding folder and is removed from the list of files in running_job_info.txt
+# If the job is still running, it remains in the Pending folder and stays in running_job_info.txt
+touch running_job_info.txt
 if test -f files2.txt; then
      rm files2.txt
 fi
 
 touch files2.txt
-numlines=$(wc -l < submitted_job_info.txt)
+numlines=$(wc -l < running_job_info.txt)
 for i in $( seq 1 $numlines ); do
    
-   line=$(sed "${i}q;d" submitted_job_info.txt)
+   line=$(sed "${i}q;d" running_job_info.txt)
    filename=${line% *}
    id=${line##* }
    extension=${filename##*.}
@@ -51,75 +51,67 @@ for i in $( seq 1 $numlines ); do
    if seff $id | grep -q PENDING; then
       echo "pending"
       echo $line >> files2.txt
-   
-   
-   # If the job is running, put its name into files2.txt
+   # if the job is running, put its name into files2.txt
    elif seff $id | grep -q RUNNING; then
       echo "running"
       echo $line >> files2.txt
-   
-   
-   # If the job is completed, move it to the COMPLETED folder along with the corresponding slurm output file
+   # if the job is completed, move it to the COMPLETED folder along with the corresponding slurm output file
    elif seff $id | grep -q COMPLETED; then
-      
       echo "completed"
-      
-      # check if these directories exist, and if not create them
-      mkdir Completed
-      mkdir Completed/completed_scripts
-      mkdir Completed/slurm_outputs
-      mkdir Completed/pdf_outputs
-      
-      
-      mv Pending/"${filename}" Completed/completed_scripts
-      mv "slurm-${id}.out" "slurm-${filename}.out"
-      mv "slurm-${filename}.out" Completed/slurm_outputs
-      
-      
       # move the Rscript to the completed folder
-      if [[ "Rmd" == "$extension" ]]; then
-         mv Pending/"${filename::-3}pdf" Completed/pdf_outputs
+      if [[ "R" == "$extension" ]]; then
+         mkdir Completed
+         mkdir Completed/completed_scripts
+         mkdir Completed/slurm_outputs
+         mv Pending/"${filename}" Completed/completed_scripts
+         mv "slurm-${id}.out" "slurm-${filename}.out"
+         mv "slurm-${filename}.out" Completed/slurm_outputs
+      elif [[ "Rmd" == "$extension" ]]; then
+         mkdir ../r_markdown/Completed
+         mkdir ../r_markdown/Completed/completed_markdown
+         mkdir ../r_markdown/Completed/slurm_outputs
+         mkdir ../r_markdown/Completed/pdf_outputs
+         mv ../r_markdown/Pending/"${filename}" ../r_markdown/Completed/completed_markdown
+         mv ../r_markdown/Pending/"${filename::-3}pdf" ../r_markdown/Completed/pdf_outputs
+         mv ../r_markdown/"slurm-${id}.out" ../r_markdown/"slurm-${filename}.out"
+         mv ../r_markdown/"slurm-${filename}.out" ../r_markdown/Completed/slurm_outputs
       fi
-      
-      
-      
-   # If the job is failed, move it to the FAILED folder along with the corresponding slurm output file
+   # if the job is failed, move it to the FAILED folder along with the corresponding slurm output file
    elif seff $id | grep -q FAILED; then
-      
       echo "failed"
-      
-      # create these directories if they do not exist
-      mkdir Failed
-      mkdir Failed/failed_scripts
-      mkdir Failed/slurm_outputs
-      mkdir Failed/pdf_outputs
-      
-      mv Pending/"${filename}" Failed/failed_scripts
-      mv "slurm-${id}.out" "slurm-${filename}.out"
-      mv "slurm-${filename}.out" Failed/slurm_outputs
-      
-      
       # move the Rscript to the failed folder
-      if [[ "Rmd" == "$extension" ]]; then
-         mv Pending/"${filename::-3}pdf" Failed/pdf_outputs
+      if [[ "R" == "$extension" ]]; then
+         mkdir Failed
+         mkdir Failed/failed_scripts
+         mkdir Failed/slurm_outputs
+         mv Pending/"${filename}" Failed/failed_scripts
+         mv "slurm-${id}.out" "slurm-${filename}.out"
+         mv "slurm-${filename}.out" Failed/slurm_outputs
+      elif [[ "Rmd" == "$extension" ]]; then
+         mkdir ../r_markdown/Failed
+         mkdir ../r_markdown/Failed/failed_markdown
+         mkdir ../r_markdown/Failed/slurm_outputs
+         mkdir ../r_markdown/Failed/pdf_outputs
+         mv ../r_markdown/Pending/"${filename}" ../r_markdown/Failed/failed_markdown
+         mv ../r_markdown/Pending/"${filename::-3}pdf" ../r_markdown/Failed/pdf_outputs
+         mv ../r_markdown/"slurm-${id}.out" ../r_markdown/"slurm-${filename}.out"
+         mv ../r_markdown/"slurm-${filename}.out" ../r_markdown/Failed/slurm_outputs
       fi
    fi
 done
-
-
-rm submitted_job_info.txt
-mv files2.txt submitted_job_info.txt
+rm running_job_info.txt
+mv files2.txt running_job_info.txt
 
 
 
 
 
 
-# This block of code will go through the analysis/ directory and create a submission script for each .R file
-# each of these scripts will then be submitted, and the submitted file names are added to submitted_job_info.txt
-# only up to 200 files are allowed to be in submitted_job_info.txt (submitted to slurm) at a time
+# this block of code will go through the results/r_scripts directory and create a submission script for each .R file
+# each of these scripts will then be submitted, and the submitted file names are added to running_job_info.txt
+# only up to 200 files are allowed to be in running_job_info.txt (submitted to slurm) at a time
 readarray -t filenames < <(ls -a | grep '.R$')
-numlines=$(wc -l < submitted_job_info.txt)
+numlines=$(wc -l < running_job_info.txt)
 newfiles=$(( 200 - $numlines ))
 for idx in ${!filenames[@]}; do
    if [ $idx -lt $newfiles ]; then
@@ -142,18 +134,16 @@ for idx in ${!filenames[@]}; do
       mv "${filename}" Pending
       message=$(sbatch analysis.sh)
       id=$(echo $message | cut -c 21-)
-      echo $filename $id >> submitted_job_info.txt
+      echo $filename $id >> running_job_info.txt
    fi
 done
 
 
 
 
-# This code is totally redundant with the above code and should be deleted
-# but need to change the grep line to work with both .R and .Rmd files
-
+cd ../r_markdown
 readarray -t filenames < <(ls -a | grep '.Rmd$')
-numlines=$(wc -l < submitted_job_info.txt)
+numlines=$(wc -l < ../r_scripts/running_job_info.txt)
 newfiles=$(( 200 - $numlines ))
 for idx in ${!filenames[@]}; do
    if [ $idx -lt $newfiles ]; then
@@ -177,11 +167,9 @@ for idx in ${!filenames[@]}; do
       mv "${filename}" Pending
       message=$(sbatch analysis.sh)
       id=$(echo $message | cut -c 21-)
-      echo $filename $id >> submitted_job_info.txt
+      echo $filename $id >> ../r_scripts/running_job_info.txt
    fi
 done
-
-
 
 
 
