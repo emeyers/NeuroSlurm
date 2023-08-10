@@ -1,0 +1,7 @@
+echo "#!/bin/bash -i" > current_slurm_submission_script.sh
+echo "#SBATCH -J NeuroSlurm_analysis" >> current_slurm_submission_script.sh
+echo "#SBATCH -c 16" >> current_slurm_submission_script.sh
+echo "#SBATCH -p bigmem" >> current_slurm_submission_script.sh
+echo "#SBATCH --constraint cascadelake" >> current_slurm_submission_script.sh
+echo "#SBATCH --mem=1500G" >> current_slurm_submission_script.sh
+echo "module load R/4.1.0-foss-2020b" >> current_slurm_submission_script.sh

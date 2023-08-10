@@ -149,29 +149,32 @@ for idx in ${!filenames[@]}; do
       # make sure to check filename and create a different analysis file depending on if it is .R or .Rmd
 
       echo $filename
-      touch analysis.sh
+      touch current_slurm_submission_script.sh
    
-      # all of these echo statements create the analysis.sh file
-      echo "#!/bin/bash -i" > analysis.sh
-      echo "#SBATCH -J NeuroSlurm_analysis" >> analysis.sh
-      echo "#SBATCH -c 16" >> analysis.sh
-      echo "#SBATCH -p bigmem" >> analysis.sh
-      echo "#SBATCH --constraint cascadelake" >> analysis.sh
-      echo "#SBATCH --mem=1500G" >> analysis.sh
-      echo "module load R/4.1.0-foss-2020b" >> analysis.sh
+      # these are no longer hard coded but rather this is included from the slurm_parameters.txt file
+      #echo "#!/bin/bash -i" > current_slurm_submission_script.sh
+      #echo "#SBATCH -J NeuroSlurm_analysis" >> current_slurm_submission_script.sh
+      #echo "#SBATCH -c 16" >> current_slurm_submission_script.sh
+      #echo "#SBATCH -p bigmem" >> current_slurm_submission_script.sh
+      #echo "#SBATCH --constraint cascadelake" >> current_slurm_submission_script.sh
+      #echo "#SBATCH --mem=1500G" >> current_slurm_submission_script.sh
+      #echo "module load R/4.1.0-foss-2020b" >> current_slurm_submission_script.sh
+      
+      # reading in the slurm parameters from slurm_parameters.txt rather than hard coding them
+      source ./../slurm_parameters.txt
       
       # If running an R script
       if echo $filename | grep '.R$'; then
         
-        echo "Rscript Pending/\"${filename}\"" >> analysis.sh
+        echo "Rscript Pending/\"${filename}\"" >> current_slurm_submission_script.sh
       
       
       
       # If running an RMarkdown document
       elif echo $filename | grep '.Rmd$'; then
       
-        echo "module load Pandoc/2.10" >> analysis.sh
-        echo "Rscript -e \"rmarkdown::render('Pending/$filename')\"" >> analysis.sh
+        echo "module load Pandoc/2.10" >> current_slurm_submission_script.sh
+        echo "Rscript -e \"rmarkdown::render('Pending/$filename')\"" >> current_slurm_submission_script.sh
       
       fi
       
@@ -182,7 +185,7 @@ for idx in ${!filenames[@]}; do
       fi
       
       mv "${filename}" Pending
-      message=$(sbatch analysis.sh)
+      message=$(sbatch current_slurm_submission_script.sh)
       id=$(echo $message | cut -c 21-)
       echo $filename $id >> submitted_job_info.txt
       
@@ -190,8 +193,6 @@ for idx in ${!filenames[@]}; do
    fi
    
 done
-
-
 
 
 
