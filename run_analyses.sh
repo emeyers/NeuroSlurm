@@ -1,20 +1,29 @@
-# read in values from the login.txt file
-https=$(sed "1q;d" $1)
-https=${https:4}
-token=$(sed "2q;d" $1)
-token=${token:6}
-dir=$(sed "3q;d" $1)
-dir=${dir:10}
-commitmessage=$(sed "4q;d" $1)
-commitmessage=${commitmessage:8}
-link=$(echo $https | cut -c 9-)
 
-cd $dir
-git pull https://$token@$link
 
-cd results/r_scripts
+# This code pulls data from GitHub. Could add it back later but can also run
+# the code without it (could have a flag that specifies if this should be run). 
 
-# this block of code checks the files in files.txt to see their job progress
+# # read in values from the login.txt file
+# https=$(sed "1q;d" $1)
+# https=${https:4}
+# token=$(sed "2q;d" $1)
+# token=${token:6}
+# dir=$(sed "3q;d" $1)
+# dir=${dir:10}
+# commitmessage=$(sed "4q;d" $1)
+# commitmessage=${commitmessage:8}
+# link=$(echo $https | cut -c 9-)
+# 
+# cd $dir
+# git pull https://$token@$link
+
+
+echo start
+
+
+cd analyses/r_scripts
+
+# This block of code checks the files in files.txt to see their job progress
 # if the job is completed or failed, it moves to the corresponding folder and is removed from the list of files in files.txt
 # if the job is still running, it remains in the Pending folder and stays in files.txt
 touch files.txt
@@ -86,7 +95,7 @@ done
 rm files.txt
 mv files2.txt files.txt
 
-# this block of code will go through the results/r_scripts directory and create a submission script for each .R file
+# this block of code will go through the analyses/r_scripts directory and create a submission script for each .R file
 # each of these scripts will then be submitted, and the submitted file names are added to files.txt
 # only up to 200 files are allowed to be in files.txt (submitted to slurm) at a time
 readarray -t filenames < <(ls -a | grep '.R$')
@@ -147,10 +156,18 @@ for idx in ${!filenames[@]}; do
    fi
 done
 
-cd ../..
 
-git add -A
-git commit -m "$commitmessage"
-git push https://$token@$link
+
+
+
+
+# This code pushes data from GitHub. Could add it back later but can also run
+# the code without it (could have a flag that specifies if this should be run). 
+
+# cd ../..
+# 
+# git add .
+# git commit -m "$commitmessage"
+# git push https://$token@$link
 
 
