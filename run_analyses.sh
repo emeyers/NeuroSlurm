@@ -1,5 +1,6 @@
 
 
+
 # This code pulls data from GitHub. Could add it back later but can also run
 # the code without it (could have a flag that specifies if this should be run). 
 
@@ -23,15 +24,17 @@ echo start
 
 cd analyses/r_scripts
 
-# This block of code checks the files in files.txt to see their job progress
-# if the job is completed or failed, it moves to the corresponding folder and is removed from the list of files in files.txt
-# if the job is still running, it remains in the Pending folder and stays in files.txt
-touch files.txt
-rm files2.txt
+# This block of code checks the files in running_job_info.txt to see their job progress
+# if the job is completed or failed, it moves to the corresponding folder and is removed from the list of files in running_job_info.txt
+# if the job is still running, it remains in the Pending folder and stays in running_job_info.txt
+touch running_job_info.txt
+if test -f files2.txt; then
+     rm files2.txt
+fi
 touch files2.txt
-numlines=$(wc -l < files.txt)
+numlines=$(wc -l < running_job_info.txt)
 for i in $( seq 1 $numlines ); do
-   line=$(sed "${i}q;d" files.txt)
+   line=$(sed "${i}q;d" running_job_info.txt)
    filename=${line% *}
    id=${line##* }
    extension=${filename##*.}
@@ -92,14 +95,19 @@ for i in $( seq 1 $numlines ); do
       fi
    fi
 done
-rm files.txt
-mv files2.txt files.txt
+rm running_job_info.txt
+mv files2.txt running_job_info.txt
 
-# this block of code will go through the analyses/r_scripts directory and create a submission script for each .R file
-# each of these scripts will then be submitted, and the submitted file names are added to files.txt
-# only up to 200 files are allowed to be in files.txt (submitted to slurm) at a time
+
+
+
+
+
+# this block of code will go through the results/r_scripts directory and create a submission script for each .R file
+# each of these scripts will then be submitted, and the submitted file names are added to running_job_info.txt
+# only up to 200 files are allowed to be in running_job_info.txt (submitted to slurm) at a time
 readarray -t filenames < <(ls -a | grep '.R$')
-numlines=$(wc -l < files.txt)
+numlines=$(wc -l < running_job_info.txt)
 newfiles=$(( 200 - $numlines ))
 for idx in ${!filenames[@]}; do
    if [ $idx -lt $newfiles ]; then
@@ -122,13 +130,16 @@ for idx in ${!filenames[@]}; do
       mv "${filename}" Pending
       message=$(sbatch analysis.sh)
       id=$(echo $message | cut -c 21-)
-      echo $filename $id >> files.txt
+      echo $filename $id >> running_job_info.txt
    fi
 done
 
+
+
+
 cd ../r_markdown
 readarray -t filenames < <(ls -a | grep '.Rmd$')
-numlines=$(wc -l < ../r_scripts/files.txt)
+numlines=$(wc -l < ../r_scripts/running_job_info.txt)
 newfiles=$(( 200 - $numlines ))
 for idx in ${!filenames[@]}; do
    if [ $idx -lt $newfiles ]; then
@@ -152,7 +163,7 @@ for idx in ${!filenames[@]}; do
       mv "${filename}" Pending
       message=$(sbatch analysis.sh)
       id=$(echo $message | cut -c 21-)
-      echo $filename $id >> ../r_scripts/files.txt
+      echo $filename $id >> ../r_scripts/running_job_info.txt
    fi
 done
 
