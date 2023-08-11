@@ -20,31 +20,63 @@
 
 
 
+# The name of the main directory that has the analysis files can be passed as an argument.
+# If this is not passed as an argument, the analyses will be done in the directory analyses/default_project/
 
-cd analyses
-
-
-# This block of code checks the files in slurm_management_files/submitted_job_info.txt to see their job progress.
-# If the job is completed or failed, it moves to the corresponding folder and is removed from the list of files in slurm_management_files/submitted_job_info.txt
-# If the job is still running, it remains in the Pending folder and stays in slurm_management_files/submitted_job_info.txt
-
-
-
-if [ ! -d "slurm_management_files" ]; then
-  mkdir slurm_management_files
+if [[ $1 == "" ]]; then
+  base_analysis_dir=analyses/default_project/
+else 
+  base_analysis_dir=$1
 fi 
 
 
-touch slurm_management_files/submitted_job_info.txt
-if test -f slurm_management_files/temp_backup_submitted_jobs.txt; then
-     rm slurm_management_files/temp_backup_submitted_jobs.txt
+
+
+# names of directories that will store scripts to be run, the results, etc.
+
+analyses_to_run_dir=$base_analysis_dir/analyses_to_run
+analyses_completed_dir=$base_analysis_dir/analyses_running_or_completed
+
+management_files_dir=$analyses_completed_dir/slurm_management_files/
+management_file_name=$management_files_dir/submitted_job_info.txt
+temp_management_file_name=$management_files_dir/temp_backup_submitted_jobs.txt
+curr_slurm_submission_script_name=$management_files_dir/current_slurm_submission_script.sh
+
+
+if [ ! -d $base_analysis_dir ]; then
+  mkdir -p $base_analysis_dir
+fi 
+
+if [ ! -d $analyses_to_run_dir ]; then
+  mkdir $analyses_to_run_dir
+fi 
+
+if [ ! -d $analyses_completed_dir ]; then
+  mkdir $analyses_completed_dir
+fi 
+
+if [ ! -d $management_files_dir ]; then
+  mkdir $management_files_dir
 fi
 
-touch slurm_management_files/temp_backup_submitted_jobs.txt
-numlines=$(wc -l < slurm_management_files/submitted_job_info.txt)
+touch $management_file_name
+if test -f $temp_management_file_name; then
+     rm $temp_management_file_name
+fi
+
+touch $temp_management_file_name
+
+
+
+# This block of code checks the files in $management_file_name to see their job progress.
+# If the job is completed or failed, it moves to the corresponding folder and is removed from the list of files in $management_file_name
+# If the job is still running, it remains in the Pending folder and stays in $management_file_name
+
+
+numlines=$(wc -l < $management_file_name)
 for i in $( seq 1 $numlines ); do
    
-   line=$(sed "${i}q;d" slurm_management_files/submitted_job_info.txt)
+   line=$(sed "${i}q;d" $management_file_name)
    filename=${line% *}
    id=${line##* }
    extension=${filename##*.}
@@ -52,13 +84,13 @@ for i in $( seq 1 $numlines ); do
    
    if seff $id | grep -q PENDING; then
       echo "pending"
-      echo $line >> slurm_management_files/temp_backup_submitted_jobs.txt
+      echo $line >> $temp_management_file_name
    
    
-   # If the job is running, put its name into slurm_management_files/temp_backup_submitted_jobs.txt
+   # If the job is running, put its name into $temp_management_file_name
    elif seff $id | grep -q RUNNING; then
       echo "running"
-      echo $line >> slurm_management_files/temp_backup_submitted_jobs.txt
+      echo $line >> $temp_management_file_name
    
    
    # If the job is completed, move it to the COMPLETED folder along with the corresponding slurm output file
@@ -68,28 +100,28 @@ for i in $( seq 1 $numlines ); do
       
       # check if these directories exist, and if not create them
       
-      if [ !  -d "Completed" ]; then
-        mkdir Completed
+      if [ ! -d "$analyses_completed_dir/Completed" ]; then
+        mkdir "$analyses_completed_dir/Completed"
       fi
-      if [ ! -d "Completed/completed_scripts" ]; then
-        mkdir Completed/completed_scripts
+      if [ ! -d "$analyses_completed_dir/Completed/completed_scripts" ]; then
+        mkdir "$analyses_completed_dir/Completed/completed_scripts"
       fi 
-      if [ ! -d "Completed/slurm_outputs" ]; then
-        mkdir Completed/slurm_outputs
+      if [ ! -d "$analyses_completed_dir/Completed/slurm_outputs" ]; then
+        mkdir "$analyses_completed_dir/Completed/slurm_outputs"
       fi 
-      if [ ! -d "Completed/pdf_outputs" ]; then
-        mkdir Completed/pdf_outputs
+      if [ ! -d "$analyses_completed_dir/Completed/pdf_outputs" ]; then
+        mkdir "$analyses_completed_dir/Completed/pdf_outputs"
       fi 
       
       
-      mv Pending/"${filename}" Completed/completed_scripts
+      mv $analyses_completed_dir/Pending/"${filename}" $analyses_completed_dir/Completed/completed_scripts
       mv "slurm-${id}.out" "slurm-${filename}.out"
-      mv "slurm-${filename}.out" Completed/slurm_outputs
+      mv "slurm-${filename}.out" $analyses_completed_dir/Completed/slurm_outputs
       
       
       # move the Rscript to the completed folder
       if [[ "Rmd" == "$extension" ]]; then
-         mv Pending/"${filename::-3}pdf" Completed/pdf_outputs
+         mv $analyses_completed_dir/Pending/"${filename::-3}pdf" $analyses_completed_dir/Completed/pdf_outputs
       fi
       
       
@@ -100,20 +132,20 @@ for i in $( seq 1 $numlines ); do
       echo "failed"
       
       # create these directories if they do not exist
-      if [ !  -d "Failed" ]; then
-        mkdir Failed
+      if [ !  -d $analyses_completed_dir/Failed ]; then
+        mkdir $analyses_completed_dir/Failed
       fi
-      if [ !  -d "Failed/failed_scripts" ]; then
-        mkdir Failed/failed_scripts
+      if [ !  -d $analyses_completed_dir/Failed/failed_scripts ]; then
+        mkdir $analyses_completed_dir/Failed/failed_scripts
       fi
-      if [ !  -d "Failed/slurm_outputs" ]; then
-        mkdir Failed/slurm_outputs
+      if [ !  -d $analyses_completed_dir/Failed/slurm_outputs ]; then
+        mkdir $analyses_completed_dir/Failed/slurm_outputs
       fi
       
       
-      mv Pending/"${filename}" Failed/failed_scripts
+      mv $analyses_completed_dir/Pending/"${filename}" $analyses_completed_dir/Failed/failed_scripts
       mv "slurm-${id}.out" "slurm-${filename}.out"
-      mv "slurm-${filename}.out" Failed/slurm_outputs
+      mv "slurm-${filename}.out" $analyses_completed_dir/Failed/slurm_outputs
       
       
       # I don't think there will be any pdf outputs if the job fails
@@ -130,8 +162,8 @@ for i in $( seq 1 $numlines ); do
 done
 
 
-rm slurm_management_files/submitted_job_info.txt
-mv slurm_management_files/temp_backup_submitted_jobs.txt slurm_management_files/submitted_job_info.txt
+rm $management_file_name
+mv $temp_management_file_name $management_file_name
 
 
 
@@ -139,12 +171,15 @@ mv slurm_management_files/temp_backup_submitted_jobs.txt slurm_management_files/
 
 
 # This block of code will go through the analysis/ directory and create a submission script for each .R and .Rmd file
-# Each of these scripts will then be submitted, and the submitted file names are added to slurm_management_files/submitted_job_info.txt
-# Only up to 200 files are allowed to be in slurm_management_files/submitted_job_info.txt (submitted to slurm) at a time
+# Each of these scripts will then be submitted, and the submitted file names are added to $management_file_name
+# Only up to 200 files are allowed to be in $management_file_name (submitted to slurm) at a time
 
-readarray -t filenames < <(ls -a | grep -E '.Rmd$|.R$')
+#readarray -t filenames < <(ls -a | grep -E '.Rmd$|.R$')
 
-numlines=$(wc -l < slurm_management_files/submitted_job_info.txt)
+readarray -t filenames < <(ls -a $analyses_to_run_dir | grep -E '.Rmd$|.R$')
+
+
+numlines=$(wc -l < $management_file_name)
 newfiles=$(( 200 - $numlines ))
 for idx in ${!filenames[@]}; do
 
@@ -156,47 +191,50 @@ for idx in ${!filenames[@]}; do
       # make sure to check filename and create a different analysis file depending on if it is .R or .Rmd
 
       echo $filename
-      touch slurm_management_files/current_slurm_submission_script.sh
+      touch $curr_slurm_submission_script_name
    
       
       # reading in the slurm parameters from slurm_parameters.txt rather than hard coding them
-      source ./../slurm_parameters.txt
+      #source ./../slurm_parameters.txt
+      source ./slurm_parameters.txt
+
       
-      echo "#!/bin/bash -i" > slurm_management_files/current_slurm_submission_script.sh
-      echo "#SBATCH -J NeuroSlurm_analysis" >> slurm_management_files/current_slurm_submission_script.sh
-      echo "#SBATCH -c $cpus" >> slurm_management_files/current_slurm_submission_script.sh
-      echo "#SBATCH -p $partition" >> slurm_management_files/current_slurm_submission_script.sh
-      echo "#SBATCH --constraint $constraint" >> slurm_management_files/current_slurm_submission_script.sh
-      echo "#SBATCH --mem=$memory" >> slurm_management_files/current_slurm_submission_script.sh
-      echo "module load $r_version" >> slurm_management_files/current_slurm_submission_script.sh
+      echo "#!/bin/bash -i" > $curr_slurm_submission_script_name
+      echo "#SBATCH -J NeuroSlurm_analysis" >> $curr_slurm_submission_script_name
+      echo "#SBATCH -c $cpus" >> $curr_slurm_submission_script_name
+      echo "#SBATCH -p $partition" >> $curr_slurm_submission_script_name
+      echo "#SBATCH --constraint $constraint" >> $curr_slurm_submission_script_name
+      echo "#SBATCH --mem=$memory" >> $curr_slurm_submission_script_name
+      echo "module load $r_version" >> $curr_slurm_submission_script_name
       
       
       # If running an R script
-      if echo $filename | grep '.R$'; then
+      if echo $analyses_to_run_dir/$filename | grep '.R$'; then
         
-        echo "Rscript Pending/\"${filename}\"" >> slurm_management_files/current_slurm_submission_script.sh
+        echo "Rscript  $analyses_completed_dir/Pending/\"${filename}\"" >> $curr_slurm_submission_script_name
       
       
       # If running an RMarkdown document
-      elif echo $filename | grep '.Rmd$'; then
+      elif echo $analyses_to_run_dir/$filename | grep '.Rmd$'; then
       
-        echo "module load Pandoc/2.10" >> slurm_management_files/current_slurm_submission_script.sh
-        echo "Rscript -e \"rmarkdown::render('Pending/$filename')\"" >> slurm_management_files/current_slurm_submission_script.sh
-        #echo "Rscript -e \"rmarkdown::render('../Pending/$filename')\"" >> slurm_management_files/current_slurm_submission_script.sh
+        echo "module load Pandoc/2.10" >> $curr_slurm_submission_script_name
+        
+        # not great, this path to the file to be run is hard coded, should make it more flexible
+        #echo "Rscript -e \"rmarkdown::render('../Pending/$filename')\"" >> $curr_slurm_submission_script_name
+        echo "Rscript -e \"rmarkdown::render('$analyses_completed_dir/Pending/$filename')\"" >> $curr_slurm_submission_script_name
 
-      
       fi
       
       
       # move the Rscript to the in progress folder
-      if [ ! -d "Pending" ]; then
-        mkdir Pending
+      if [ ! -d  $analyses_completed_dir/Pending ]; then
+        mkdir  $analyses_completed_dir/Pending
       fi
       
-      mv "${filename}" Pending
-      message=$(sbatch slurm_management_files/current_slurm_submission_script.sh)
+      mv "$analyses_to_run_dir/${filename}" $analyses_completed_dir/Pending
+      message=$(sbatch $curr_slurm_submission_script_name)
       id=$(echo $message | cut -c 21-)
-      echo $filename $id >> slurm_management_files/submitted_job_info.txt
+      echo $filename $id >> $management_file_name
 
    fi
    

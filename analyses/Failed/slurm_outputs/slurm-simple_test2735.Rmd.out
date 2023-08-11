@@ -1,9 +1,0 @@
-bash: cannot set terminal process group (-1): Inappropriate ioctl for device
-bash: no job control in this shell
-Error in abs_path(input) : 
-  The file '../Pending/simple_test2735.Rmd' does not exist.
-Calls: <Anonymous> -> setwd -> dirname -> abs_path
-In addition: Warning message:
-In normalizePath(path, winslash = winslash, mustWork = mustWork) :
-  path[1]="../Pending/simple_test2735.Rmd": No such file or directory
-Execution halted

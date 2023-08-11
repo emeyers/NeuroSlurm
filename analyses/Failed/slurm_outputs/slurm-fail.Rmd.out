@@ -1,34 +1,0 @@
-bash: cannot set terminal process group (-1): Inappropriate ioctl for device
-bash: no job control in this shell
-
-
-processing file: fail.Rmd
-  |                                                                              |                                                                      |   0%  |                                                                              |..........                                                            |  14%
-  ordinary text without R code
-
-  |                                                                              |....................                                                  |  29%
-label: setup (with options) 
-List of 1
- $ include: logi FALSE
-
-  |                                                                              |..............................                                        |  43%
-  ordinary text without R code
-
-  |                                                                              |........................................                              |  57%
-label: cars
-  |                                                                              |..................................................                    |  71%
-  ordinary text without R code
-
-  |                                                                              |............................................................          |  86%
-label: pressure (with options) 
-List of 1
- $ echo: logi FALSE
-
-Quitting from lines 26-30 (fail.Rmd) 
-Error in 2 + "a" : non-numeric argument to binary operator
-Calls: <Anonymous> ... handle -> withCallingHandlers -> withVisible -> eval -> eval
-In addition: Warning message:
-In png(..., res = dpi, units = "in") :
-  unable to open connection to X11 display ''
-
-Execution halted
