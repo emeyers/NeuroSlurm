@@ -5,11 +5,10 @@ Auotmatically runs submits R scripts to a slurm cluster and organizes the result
 To automatically submit jobs to a slurm schedule one needs to do the following: 
 1. Copy the file `run_analyses.sh`
 2. Copy the file `slurm_parameters.txt`
-3. Create a directory `called analyses/`
 
-Once this is done, one can put .R and .Rmd files in the `analysis/` folder, and then run the analysis script by typing `./run_analyses.sh` on the command line. 
+Once this is done, one can run `./run_analyses.sh analyses/project_name/` to create a directory `analyses/project_name/analyses_to_run`, where `analyses/project_name/` is the name of a directory where you would like to save your results.
 
-This will cause all the .R and .Rmd files to be submitted to the cluster. Files that are successfully executed will be in a folder `analyses/Completed` while files that fail will be in a folder `analyses/Failed`. 
+One can then put `.r` or `.Rmd` in the directory `analyses/project_name/analyses_to_run/`, and then call `./run_analyses.sh analyses/project_name/` again to run all the files in the `analyses/project_name/`. Files that are successfully executed will be in a folder `analyses/project_name/analyses_running_or_completed/Completed/` while files that fail will be in a folder `analyses/project_name/analyses_running_or_completed/Failed/`. 
 
 One can change cluster parameter settings (e.g., the number of CPUs, RAM, etc.) by modifying the `slurm_parameters.txt` file. 
 
