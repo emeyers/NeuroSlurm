@@ -24,20 +24,27 @@
 cd analyses
 
 
-# This block of code checks the files in submitted_job_info.txt to see their job progress.
-# If the job is completed or failed, it moves to the corresponding folder and is removed from the list of files in submitted_job_info.txt
-# If the job is still running, it remains in the Pending folder and stays in submitted_job_info.txt
+# This block of code checks the files in slurm_management_files/submitted_job_info.txt to see their job progress.
+# If the job is completed or failed, it moves to the corresponding folder and is removed from the list of files in slurm_management_files/submitted_job_info.txt
+# If the job is still running, it remains in the Pending folder and stays in slurm_management_files/submitted_job_info.txt
 
-touch submitted_job_info.txt
-if test -f temp_backup_submitted_jobs.txt; then
-     rm temp_backup_submitted_jobs.txt
+
+
+if [ ! -d "slurm_management_files" ]; then
+  mkdir slurm_management_files
+fi 
+
+
+touch slurm_management_files/submitted_job_info.txt
+if test -f slurm_management_files/temp_backup_submitted_jobs.txt; then
+     rm slurm_management_files/temp_backup_submitted_jobs.txt
 fi
 
-touch temp_backup_submitted_jobs.txt
-numlines=$(wc -l < submitted_job_info.txt)
+touch slurm_management_files/temp_backup_submitted_jobs.txt
+numlines=$(wc -l < slurm_management_files/submitted_job_info.txt)
 for i in $( seq 1 $numlines ); do
    
-   line=$(sed "${i}q;d" submitted_job_info.txt)
+   line=$(sed "${i}q;d" slurm_management_files/submitted_job_info.txt)
    filename=${line% *}
    id=${line##* }
    extension=${filename##*.}
@@ -45,13 +52,13 @@ for i in $( seq 1 $numlines ); do
    
    if seff $id | grep -q PENDING; then
       echo "pending"
-      echo $line >> temp_backup_submitted_jobs.txt
+      echo $line >> slurm_management_files/temp_backup_submitted_jobs.txt
    
    
-   # If the job is running, put its name into temp_backup_submitted_jobs.txt
+   # If the job is running, put its name into slurm_management_files/temp_backup_submitted_jobs.txt
    elif seff $id | grep -q RUNNING; then
       echo "running"
-      echo $line >> temp_backup_submitted_jobs.txt
+      echo $line >> slurm_management_files/temp_backup_submitted_jobs.txt
    
    
    # If the job is completed, move it to the COMPLETED folder along with the corresponding slurm output file
@@ -123,8 +130,8 @@ for i in $( seq 1 $numlines ); do
 done
 
 
-rm submitted_job_info.txt
-mv temp_backup_submitted_jobs.txt submitted_job_info.txt
+rm slurm_management_files/submitted_job_info.txt
+mv slurm_management_files/temp_backup_submitted_jobs.txt slurm_management_files/submitted_job_info.txt
 
 
 
@@ -132,12 +139,12 @@ mv temp_backup_submitted_jobs.txt submitted_job_info.txt
 
 
 # This block of code will go through the analysis/ directory and create a submission script for each .R and .Rmd file
-# Each of these scripts will then be submitted, and the submitted file names are added to submitted_job_info.txt
-# Only up to 200 files are allowed to be in submitted_job_info.txt (submitted to slurm) at a time
+# Each of these scripts will then be submitted, and the submitted file names are added to slurm_management_files/submitted_job_info.txt
+# Only up to 200 files are allowed to be in slurm_management_files/submitted_job_info.txt (submitted to slurm) at a time
 
 readarray -t filenames < <(ls -a | grep -E '.Rmd$|.R$')
 
-numlines=$(wc -l < submitted_job_info.txt)
+numlines=$(wc -l < slurm_management_files/submitted_job_info.txt)
 newfiles=$(( 200 - $numlines ))
 for idx in ${!filenames[@]}; do
 
@@ -149,16 +156,16 @@ for idx in ${!filenames[@]}; do
       # make sure to check filename and create a different analysis file depending on if it is .R or .Rmd
 
       echo $filename
-      touch current_slurm_submission_script.sh
+      touch slurm_management_files/current_slurm_submission_script.sh
    
       # these are no longer hard coded but rather this is included from the slurm_parameters.txt file
-      #echo "#!/bin/bash -i" > current_slurm_submission_script.sh
-      #echo "#SBATCH -J NeuroSlurm_analysis" >> current_slurm_submission_script.sh
-      #echo "#SBATCH -c 16" >> current_slurm_submission_script.sh
-      #echo "#SBATCH -p bigmem" >> current_slurm_submission_script.sh
-      #echo "#SBATCH --constraint cascadelake" >> current_slurm_submission_script.sh
-      #echo "#SBATCH --mem=1500G" >> current_slurm_submission_script.sh
-      #echo "module load R/4.1.0-foss-2020b" >> current_slurm_submission_script.sh
+      #echo "#!/bin/bash -i" > slurm_management_files/current_slurm_submission_script.sh
+      #echo "#SBATCH -J NeuroSlurm_analysis" >> slurm_management_files/current_slurm_submission_script.sh
+      #echo "#SBATCH -c 16" >> slurm_management_files/current_slurm_submission_script.sh
+      #echo "#SBATCH -p bigmem" >> slurm_management_files/current_slurm_submission_script.sh
+      #echo "#SBATCH --constraint cascadelake" >> slurm_management_files/current_slurm_submission_script.sh
+      #echo "#SBATCH --mem=1500G" >> slurm_management_files/current_slurm_submission_script.sh
+      #echo "module load R/4.1.0-foss-2020b" >> slurm_management_files/current_slurm_submission_script.sh
       
       # reading in the slurm parameters from slurm_parameters.txt rather than hard coding them
       source ./../slurm_parameters.txt
@@ -166,15 +173,16 @@ for idx in ${!filenames[@]}; do
       # If running an R script
       if echo $filename | grep '.R$'; then
         
-        echo "Rscript Pending/\"${filename}\"" >> current_slurm_submission_script.sh
-      
+        echo "Rscript Pending/\"${filename}\"" >> slurm_management_files/current_slurm_submission_script.sh
       
       
       # If running an RMarkdown document
       elif echo $filename | grep '.Rmd$'; then
       
-        echo "module load Pandoc/2.10" >> current_slurm_submission_script.sh
-        echo "Rscript -e \"rmarkdown::render('Pending/$filename')\"" >> current_slurm_submission_script.sh
+        echo "module load Pandoc/2.10" >> slurm_management_files/current_slurm_submission_script.sh
+        echo "Rscript -e \"rmarkdown::render('Pending/$filename')\"" >> slurm_management_files/current_slurm_submission_script.sh
+        #echo "Rscript -e \"rmarkdown::render('../Pending/$filename')\"" >> slurm_management_files/current_slurm_submission_script.sh
+
       
       fi
       
@@ -185,11 +193,10 @@ for idx in ${!filenames[@]}; do
       fi
       
       mv "${filename}" Pending
-      message=$(sbatch current_slurm_submission_script.sh)
+      message=$(sbatch slurm_management_files/current_slurm_submission_script.sh)
       id=$(echo $message | cut -c 21-)
-      echo $filename $id >> submitted_job_info.txt
-      
-      
+      echo $filename $id >> slurm_management_files/submitted_job_info.txt
+
    fi
    
 done
