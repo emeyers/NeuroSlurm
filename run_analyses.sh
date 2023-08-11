@@ -30,22 +30,34 @@ else
 fi 
 
 
+# can pass an alternative file with slurm parameters as an argument
+if [[ $2 == "" ]]; then
+  slurm_parameters_file=slurm_parameters.txt
+else 
+  slurm_parameters_file=$2
+fi 
+
+
+
 
 
 # names of directories that will store scripts to be run, the results, etc.
 
+if [ ! -d $base_analysis_dir ]; then
+  mkdir -p $base_analysis_dir
+fi 
+
+
+
 analyses_to_run_dir=$base_analysis_dir/analyses_to_run
 analyses_completed_dir=$base_analysis_dir/analyses_running_or_completed
+
 
 management_files_dir=$analyses_completed_dir/slurm_management_files/
 management_file_name=$management_files_dir/submitted_job_info.txt
 temp_management_file_name=$management_files_dir/temp_backup_submitted_jobs.txt
 curr_slurm_submission_script_name=$management_files_dir/current_slurm_submission_script.sh
 
-
-if [ ! -d $base_analysis_dir ]; then
-  mkdir -p $base_analysis_dir
-fi 
 
 if [ ! -d $analyses_to_run_dir ]; then
   mkdir $analyses_to_run_dir
@@ -65,6 +77,8 @@ if test -f $temp_management_file_name; then
 fi
 
 touch $temp_management_file_name
+
+
 
 
 
@@ -115,9 +129,10 @@ for i in $( seq 1 $numlines ); do
       
       
       mv $analyses_completed_dir/Pending/"${filename}" $analyses_completed_dir/Completed/completed_scripts
-      mv "slurm-${id}.out" "slurm-${filename}.out"
-      mv "slurm-${filename}.out" $analyses_completed_dir/Completed/slurm_outputs
-      
+      #mv "slurm-${id}.out" "slurm-${filename}.out"
+      #mv "slurm-${filename}.out" $analyses_completed_dir/Completed/slurm_outputs
+      mv "$management_files_dir/slurm-${filename}.out" $analyses_completed_dir/Completed/slurm_outputs
+
       
       # move the Rscript to the completed folder
       if [[ "Rmd" == "$extension" ]]; then
@@ -144,8 +159,12 @@ for i in $( seq 1 $numlines ); do
       
       
       mv $analyses_completed_dir/Pending/"${filename}" $analyses_completed_dir/Failed/failed_scripts
-      mv "slurm-${id}.out" "slurm-${filename}.out"
-      mv "slurm-${filename}.out" $analyses_completed_dir/Failed/slurm_outputs
+      
+      #mv "slurm-${id}.out" "slurm-${filename}.out"
+      #mv "slurm-${filename}.out" $analyses_completed_dir/Failed/slurm_outputs
+
+      # could add the job ID to the file name as well...
+      mv "$management_files_dir/slurm-${filename}.out" $analyses_completed_dir/Failed/slurm_outputs
       
       
       # I don't think there will be any pdf outputs if the job fails
@@ -189,14 +208,12 @@ for idx in ${!filenames[@]}; do
       filename=${filenames[$idx]}
    
       # make sure to check filename and create a different analysis file depending on if it is .R or .Rmd
-
-      echo $filename
       touch $curr_slurm_submission_script_name
    
-      
+   
       # reading in the slurm parameters from slurm_parameters.txt rather than hard coding them
-      #source ./../slurm_parameters.txt
-      source ./slurm_parameters.txt
+      #source ./slurm_parameters.txt
+      source ./$slurm_parameters_file
 
       
       echo "#!/bin/bash -i" > $curr_slurm_submission_script_name
@@ -209,13 +226,13 @@ for idx in ${!filenames[@]}; do
       
       
       # If running an R script
-      if echo $analyses_to_run_dir/$filename | grep '.R$'; then
+      if echo "$analyses_to_run_dir/$filename" | grep '.R$' >/dev/null 2>&1; then
         
-        echo "Rscript  $analyses_completed_dir/Pending/\"${filename}\"" >> $curr_slurm_submission_script_name
+        echo "Rscript $analyses_completed_dir/Pending/\"${filename}\"" >> $curr_slurm_submission_script_name
       
       
       # If running an RMarkdown document
-      elif echo $analyses_to_run_dir/$filename | grep '.Rmd$'; then
+      elif echo "$analyses_to_run_dir/$filename" | grep '.Rmd$' >/dev/null 2>&1; then
       
         echo "module load Pandoc/2.10" >> $curr_slurm_submission_script_name
         
@@ -232,9 +249,14 @@ for idx in ${!filenames[@]}; do
       fi
       
       mv "$analyses_to_run_dir/${filename}" $analyses_completed_dir/Pending
-      message=$(sbatch $curr_slurm_submission_script_name)
+      
+      output_file_name="$management_files_dir/slurm-${filename}.out"
+      message=$(sbatch --output $output_file_name $curr_slurm_submission_script_name)
+      
       id=$(echo $message | cut -c 21-)
       echo $filename $id >> $management_file_name
+
+      echo "$filename submitted with jobID $id"
 
    fi
    
