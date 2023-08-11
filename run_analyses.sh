@@ -158,17 +158,18 @@ for idx in ${!filenames[@]}; do
       echo $filename
       touch slurm_management_files/current_slurm_submission_script.sh
    
-      # these are no longer hard coded but rather this is included from the slurm_parameters.txt file
-      #echo "#!/bin/bash -i" > slurm_management_files/current_slurm_submission_script.sh
-      #echo "#SBATCH -J NeuroSlurm_analysis" >> slurm_management_files/current_slurm_submission_script.sh
-      #echo "#SBATCH -c 16" >> slurm_management_files/current_slurm_submission_script.sh
-      #echo "#SBATCH -p bigmem" >> slurm_management_files/current_slurm_submission_script.sh
-      #echo "#SBATCH --constraint cascadelake" >> slurm_management_files/current_slurm_submission_script.sh
-      #echo "#SBATCH --mem=1500G" >> slurm_management_files/current_slurm_submission_script.sh
-      #echo "module load R/4.1.0-foss-2020b" >> slurm_management_files/current_slurm_submission_script.sh
       
       # reading in the slurm parameters from slurm_parameters.txt rather than hard coding them
       source ./../slurm_parameters.txt
+      
+      echo "#!/bin/bash -i" > slurm_management_files/current_slurm_submission_script.sh
+      echo "#SBATCH -J NeuroSlurm_analysis" >> slurm_management_files/current_slurm_submission_script.sh
+      echo "#SBATCH -c $cpus" >> slurm_management_files/current_slurm_submission_script.sh
+      echo "#SBATCH -p $partition" >> slurm_management_files/current_slurm_submission_script.sh
+      echo "#SBATCH --constraint $constraint" >> slurm_management_files/current_slurm_submission_script.sh
+      echo "#SBATCH --mem=$memory" >> slurm_management_files/current_slurm_submission_script.sh
+      echo "module load $r_version" >> slurm_management_files/current_slurm_submission_script.sh
+      
       
       # If running an R script
       if echo $filename | grep '.R$'; then

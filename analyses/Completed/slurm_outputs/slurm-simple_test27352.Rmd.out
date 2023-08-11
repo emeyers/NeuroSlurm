@@ -1,0 +1,38 @@
+bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+
+
+processing file: simple_test27352.Rmd
+  |                                                                              |                                                                      |   0%  |                                                                              |..........                                                            |  14%
+  ordinary text without R code
+
+  |                                                                              |....................                                                  |  29%
+label: setup (with options) 
+List of 1
+ $ include: logi FALSE
+
+  |                                                                              |..............................                                        |  43%
+  ordinary text without R code
+
+  |                                                                              |........................................                              |  57%
+label: cars
+  |                                                                              |..................................................                    |  71%
+  ordinary text without R code
+
+  |                                                                              |............................................................          |  86%
+label: pressure (with options) 
+List of 1
+ $ echo: logi FALSE
+
+  |                                                                              |......................................................................| 100%
+  ordinary text without R code
+
+
+output file: simple_test27352.knit.md
+
+/gpfs/loomis/apps/avx/software/Pandoc/2.10/bin/pandoc +RTS -K512m -RTS simple_test27352.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output simple_test27352.tex --lua-filter /vast/palmer/apps/avx.grace/software/R/4.1.0-foss-2020b/lib64/R/library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /vast/palmer/apps/avx.grace/software/R/4.1.0-foss-2020b/lib64/R/library/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --highlight-style tango --pdf-engine pdflatex --variable graphics --variable 'geometry:margin=1in' 
+
+Output created: simple_test27352.pdf
+Warning message:
+In png(..., res = dpi, units = "in") :
+  unable to open connection to X11 display ''
