@@ -71,5 +71,12 @@ else
 fi
 
 
+log_file_name=analyses_test/test_project1/analyses_running_or_completed/slurm_management_files/slurm_log.csv
 
+if [ -e "$log_file_name" ]
+then
+    echo "ok: log file exist at $log_file_name"
+else
+    echo "not ok: log file does not exist"
+fi
 

@@ -1,3 +1,61 @@
+#!/bin/bash
+
+
+# helper function to write output from slurm to a .csv file
+write_to_slurm_log_file () {
+  
+  current_job_ID=$1 
+  curr_file_name=$2
+  slurm_log_file_name=$3
+  
+  output=$(seff "$current_job_ID")
+  
+  
+  # Declare arrays
+  declare -a name
+  declare -a value
+  
+  # Process output into arrays
+  while IFS=':' read -r n v; do
+      name+=("$n")
+      value+=("$v")
+  done <<< "$output"
+  
+  # Create strings from arrays
+  names_string=$(IFS=, ; echo "${name[*]}")
+  values_string=$(IFS=, ; echo "${value[*]}")
+  
+  
+  # append the name of the file on to .csv file
+  names_string="File,$names_string"
+  values_string="$curr_file_name,$values_string"
+  
+  # Remove trailing commas
+  names_string="${names_string%,}"
+  values_string="${values_string%,}"
+  
+  
+  # Add lines to the slurm log
+  
+  if [ -f "$slurm_log_file_name" ]; then
+      
+      # Append values_string to slurm_log_file
+      echo "$values_string" >> $slurm_log_file_name
+      echo "Values appended to $slurm_log_file_name"
+      
+  else
+  
+      # If the slurm_log_file doesn't exist, 
+      # write both names_string and values_string to slurm_log_file
+      echo "$names_string" > $slurm_log_file_name
+      echo "$values_string" >> $slurm_log_file_name
+      echo "Names and values written to $slurm_log_file_name"
+  fi
+
+}
+
+
+
 
 
 
@@ -57,6 +115,7 @@ management_files_dir=$analyses_completed_dir/slurm_management_files/
 management_file_name=$management_files_dir/submitted_job_info.txt
 temp_management_file_name=$management_files_dir/temp_backup_submitted_jobs.txt
 curr_slurm_submission_script_name=$management_files_dir/current_slurm_submission_script.sh
+slurm_log_file_name=$management_files_dir/slurm_log.csv
 
 
 if [ ! -d $analyses_to_run_dir ]; then
@@ -140,6 +199,9 @@ for i in $( seq 1 $numlines ); do
       fi
       
       
+      # write the output to the slurm log file
+      write_to_slurm_log_file $id ${filename} $slurm_log_file_name
+
       
    # If the job is failed, move it to the FAILED folder along with the corresponding slurm output file
    elif seff $id | grep -q FAILED; then
@@ -175,7 +237,11 @@ for i in $( seq 1 $numlines ); do
       #    mv Pending/"${filename::-3}pdf" Failed/pdf_outputs
       # fi
    
-      
+   
+      # write the output to the slurm log file
+      write_to_slurm_log_file $id ${filename} $slurm_log_file_name
+
+
    fi
    
 done
