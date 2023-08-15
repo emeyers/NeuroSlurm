@@ -41,7 +41,7 @@ write_to_slurm_log_file () {
       
       # Append values_string to slurm_log_file
       echo "$values_string" >> $slurm_log_file_name
-      echo "Values appended to $slurm_log_file_name"
+      # echo "Values appended to $slurm_log_file_name"
       
   else
   
@@ -49,7 +49,7 @@ write_to_slurm_log_file () {
       # write both names_string and values_string to slurm_log_file
       echo "$names_string" > $slurm_log_file_name
       echo "$values_string" >> $slurm_log_file_name
-      echo "Names and values written to $slurm_log_file_name"
+      # echo "Names and values written to $slurm_log_file_name"
   fi
 
 }
@@ -115,7 +115,8 @@ management_files_dir=$analyses_completed_dir/slurm_management_files/
 management_file_name=$management_files_dir/submitted_job_info.txt
 temp_management_file_name=$management_files_dir/temp_backup_submitted_jobs.txt
 curr_slurm_submission_script_name=$management_files_dir/current_slurm_submission_script.sh
-slurm_log_file_name=$management_files_dir/slurm_log.csv
+slurm_completed_or_failed_log_file_name=$management_files_dir/slurm_completed_and_failed_log.csv
+slurm_running_or_pending_log_file_name=$management_files_dir/slurm_running_and_pending_log.csv
 
 
 if [ ! -d $analyses_to_run_dir ]; then
@@ -146,6 +147,13 @@ touch $temp_management_file_name
 # If the job is still running, it remains in the Pending folder and stays in $management_file_name
 
 
+
+# remove the log file for jobs in progress and recreate it for any jobs that are currently running
+if [ -e $slurm_running_or_pending_log_file_name ]; then
+    rm $slurm_running_or_pending_log_file_name
+fi
+
+
 numlines=$(wc -l < $management_file_name)
 for i in $( seq 1 $numlines ); do
    
@@ -156,15 +164,23 @@ for i in $( seq 1 $numlines ); do
    
    
    if seff $id | grep -q PENDING; then
+      
       echo "pending"
       echo $line >> $temp_management_file_name
-   
-   
+  
+      # writing to a log file that can track jobs in progress
+      write_to_slurm_log_file $id ${filename} $slurm_running_or_pending_log_file_name  
+      
+      
    # If the job is running, put its name into $temp_management_file_name
    elif seff $id | grep -q RUNNING; then
+      
       echo "running"
       echo $line >> $temp_management_file_name
    
+      # writing to a log file that can track jobs in progress
+      write_to_slurm_log_file $id ${filename} $slurm_running_or_pending_log_file_name
+
    
    # If the job is completed, move it to the COMPLETED folder along with the corresponding slurm output file
    elif seff $id | grep -q COMPLETED; then
@@ -200,7 +216,7 @@ for i in $( seq 1 $numlines ); do
       
       
       # write the output to the slurm log file
-      write_to_slurm_log_file $id ${filename} $slurm_log_file_name
+      write_to_slurm_log_file $id ${filename} $slurm_completed_or_failed_log_file_name
 
       
    # If the job is failed, move it to the FAILED folder along with the corresponding slurm output file
@@ -239,7 +255,7 @@ for i in $( seq 1 $numlines ); do
    
    
       # write the output to the slurm log file
-      write_to_slurm_log_file $id ${filename} $slurm_log_file_name
+      write_to_slurm_log_file $id ${filename} $slurm_completed_or_failed_log_file_name
 
 
    fi

@@ -46,6 +46,9 @@ while true; do
 
   sleep 10  # Wait for 10 seconds before checking again
 
+
+  ./../run_analyses.sh analyses_test/test_project1/
+
 done
 
 
@@ -71,7 +74,7 @@ else
 fi
 
 
-log_file_name=analyses_test/test_project1/analyses_running_or_completed/slurm_management_files/slurm_log.csv
+log_file_name=analyses_test/test_project1/analyses_running_or_completed/slurm_management_files/slurm_completed_and_failed_log.csv
 
 if [ -e "$log_file_name" ]
 then
