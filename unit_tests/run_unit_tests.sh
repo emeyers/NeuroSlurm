@@ -7,9 +7,10 @@ rm -r analyses_test
 
 
 # copy the example script files into the analyses_to_run/ directory
-#cp unit_tests/example_test_fail_script.R unit_tests/example_test_working_script.R unit_tests/example_test_working_markdown.Rmd unit_tests/analyses/test_project1/analyses_to_run/
 
 cp example_test_fail_script.R example_test_working_script.R example_test_working_markdown.Rmd analyses_test/test_project1/analyses_to_run/
+
+
 
 
 # submit the jobs and make sure everything worked

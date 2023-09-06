@@ -1,5 +1,7 @@
-r_version=R/4.1.0-foss-2020b
+r_version=R/4.3.0-foss-2020b
 cpus=16
 memory=1500G
 partition=bigmem
 constraint=cascadelake
+other_modules="texlive/20220321-GCC-10.2.0 Pandoc/3.1.2"
+other_slurm_statements="export R_LIBS_USER=/home/em939/project/R/4.3"
