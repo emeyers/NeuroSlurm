@@ -294,21 +294,8 @@ for idx in ${!filenames[@]}; do
    
    
       # reading in the slurm parameters from slurm_parameters.txt rather than hard coding them
-      #source ./slurm_parameters.txt
-      source ./$slurm_parameters_file
-
-      
-      echo "#!/bin/bash" > $curr_slurm_submission_script_name
-      echo "#SBATCH -J NeuroSlurm_analysis" >> $curr_slurm_submission_script_name
-      echo "#SBATCH -c $cpus" >> $curr_slurm_submission_script_name
-      echo "#SBATCH -p $partition" >> $curr_slurm_submission_script_name
-      echo "#SBATCH --constraint $constraint" >> $curr_slurm_submission_script_name
-      echo "#SBATCH --mem=$memory" >> $curr_slurm_submission_script_name
-      echo "module load $r_version" >> $curr_slurm_submission_script_name
-      
-      echo "module load $other_modules" >> $curr_slurm_submission_script_name
-      echo "$other_slurm_statements" >> $curr_slurm_submission_script_name
-
+      cat ./$slurm_parameters_file > $curr_slurm_submission_script_name
+      echo "/n" >> $curr_slurm_submission_script_name
       
       # If running an R script
       if echo "$analyses_to_run_dir/$filename" | grep '.R$' >/dev/null 2>&1; then
@@ -319,14 +306,6 @@ for idx in ${!filenames[@]}; do
       # If running an RMarkdown document
       elif echo "$analyses_to_run_dir/$filename" | grep '.Rmd$' >/dev/null 2>&1; then
       
-        #echo "module load Pandoc/2.10" >> $curr_slurm_submission_script_name
-        #echo "module load Pandoc/3.1.2" >> $curr_slurm_submission_script_name
-        #echo "module load texlive/20220321-GCC-10.2.0" >> $curr_slurm_submission_script_name
-
-
-        
-        # not great, this path to the file to be run is hard coded, should make it more flexible
-        #echo "Rscript -e \"rmarkdown::render('../Pending/$filename')\"" >> $curr_slurm_submission_script_name
         echo "Rscript -e \"rmarkdown::render('$analyses_completed_dir/Pending/$filename')\"" >> $curr_slurm_submission_script_name
 
       fi
